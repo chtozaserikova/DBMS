@@ -1,0 +1,44 @@
+docker run --name sql_tutorial -e POSTGRES_PASSWORD=123 -d --rm postgres
+docker exec -it 8ace386a661b /bin/bash
+-U postgres
+create database test_database;
+\c test_database
+
+create table members (
+id serial not null unique,
+first_name varchar(255) not null,
+last_name varchar(255) not null,
+middle_name varchar(255),
+phone varchar(255) not null unique,
+date_of_birth date not null,
+expires_at timestamp not null);
+
+create table memberships (
+id serial not null unique,
+title varchar(255) not null,
+price int not null,
+duration int not null);
+
+alter table members add column membership_id int not null references memberships (id);
+\d members
+
+create table visits (
+id serial not null unique,
+member_id int not null references members (id),
+came_at timestamp not null default now(),
+left_at timestamp not null);
+
+insert into memberships (title, price, duration) values ('Basic 3 month', 2999, 3);
+insert into memberships (title, price, duration) values ('Basic 6 month', 5999, 6);
+insert into memberships (title, price, duration) values ('Basic 12 month', 8999, 12);
+
+insert into members (first_name, last_name, phone, date_of_birth, expires_at, membership_id) values ('Sveta', 'Serikova', '1234', '09-17-2002', '08-15-2022', 1);
+update members set middle_name='Sergeevna' where id=2;
+
+alter table visits alter column left_at drop not null;
+insert into visits (member_id) values (2);
+select * from members where id = 2;
+
+select v.id, m.first_name, m.phone, v.came_at, v.left_at from visits v join members m on v.member_id=m.id;
+update visits set left_at=now() where id=2;
+test_database=# select v.id, m.first_name, m.phone, v.came_at, v.left_at from visits v join members m on v.member_id=m.id;
