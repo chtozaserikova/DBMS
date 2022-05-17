@@ -1,0 +1,14 @@
+cd mongodb-docker
+
+docker run -d -p 2717:27017 -v /mongodb-docker:/data/db mongo:latest
+
+docker exec -it 25af5f98991e70fe4a392e6c765c6d28f93b5861368d331c374e29aa19c34237 bash
+
+mongo
+show dbs
+use test
+db.user.insert({"name":"Sveta"})
+db.user.find()
+
+exit
+exit
