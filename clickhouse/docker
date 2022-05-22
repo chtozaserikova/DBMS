@@ -1,0 +1,8 @@
+docker run -d --name some-clickhouse-server -p 8123:8123 --ulimit nofile=262144:262144 yandex/clickhouse-server
+docker exec -it 84bbe294b11e /bin/bash
+docker run -it --rm --link some-clickhouse-server:clickhouse-server yandex/clickhouse-client --host clickhouse-server
+
+CREATE TABLE testovoe(user_id UInt128, event_time DateTime, event_id UInt128) ENGINE = Log
+cat test_data.csv | clickhouse-client --query='insert into testovoe format CSV'
+
+CREATE VIEW view_testovoe AS SELECT event_time as date, user_id FROM testovoe GROUP BY user_id
