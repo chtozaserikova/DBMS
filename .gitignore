@@ -1,0 +1,5 @@
+__pycache__/
+_sqlite3.cpython-37m-x86_64-linux-gnu.so
+db
+german_credit_augmented.csv
+german_credit_augmented_transactions.csv
